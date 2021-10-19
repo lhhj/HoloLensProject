@@ -24,7 +24,12 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      
+      - name: runscript
+        run: 'ls'
+        
       - name: Azure Blob Upload
+      
         uses: LanceMcCarthy/Action-AzureBlobUpload@v1.9.0
         with:
           # The connection string for the storage account
