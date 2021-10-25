@@ -140,6 +140,7 @@ function handleError(error) {
    }
    var DEVICES = [];
    var final = null;
+   var constraints;
     navigator.mediaDevices.enumerateDevices()
         .then(function(devices) {
 
@@ -166,7 +167,7 @@ function handleError(error) {
             };
 
             //Set the constraints and call getUserMedia
-            var constraints = {
+            constraints = {
             audio: false, 
             video: {
                 deviceId: {exact: final.deviceId}
