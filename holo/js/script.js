@@ -140,7 +140,13 @@ function handleError(error) {
    }
    const constraints = {
       video: {
-       facingMode: 'environment'
+        facingMode: 'environment',
+        width: {
+            min: 1280
+        },
+        height: {
+            min: 720
+        }
       }
    };
    
