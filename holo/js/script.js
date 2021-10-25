@@ -138,7 +138,7 @@ function handleError(error) {
      console.log('Wait! Model not loaded yet.')
      return;
    }
-   const constraints = {
+   /*const constraints = {
       video: {
         facingMode: 'environment',
         width: {
@@ -148,6 +148,9 @@ function handleError(error) {
             min: 720
         }
       }
+   };*/
+   const constraints ={
+     video:true
    };
    
    event.target.classList.add('removed');  
