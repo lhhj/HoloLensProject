@@ -125,7 +125,13 @@
    console.warn('getUserMedia() is not supported by your browser');
  }
  
- 
+ function handleSuccess(stream) {
+  window.stream = stream; // make stream available to browser console
+  video.srcObject = stream;
+}
+function handleError(error) {
+  console.log('navigator.getUserMedia error: ', error);
+}
  // Enable the live webcam view and start classification.
  function enableCam(event) {
    if (!model) {
@@ -137,24 +143,41 @@
    event.target.classList.add('removed');  
    
    // getUsermedia parameters.
-   var constraints = {
-    audio: false,
-    video: {
-        width: { ideal: 1280 },
-        height: { ideal: 1024 },
-        facingMode: "environment"
-      }
-    };
-  // enumerate devices and select the first camera (mostly the back one)
-  navigator.mediaDevices.enumerateDevices().then(function(devices) {
-    for (var i = 0; i !== devices.length; ++i) {
-        if (devices[i].kind === 'videoinput') {
-            console.log('Camera found: ', devices[i].label || 'label not found', devices[i].deviceId || 'id no found');
-            videoConstraints.deviceId = { exact: devices[i].deviceId }
-        }
-    }
-  });
-
+   var DEVICES = [];
+   var final = null;
+   var constraints;
+   navigator.mediaDevices.enumerateDevices()
+       .then(function(devices) {
+   
+           var arrayLength = devices.length;
+           for (var i = 0; i < arrayLength; i++)
+           {
+               var tempDevice = devices[i];
+               //FOR EACH DEVICE, PUSH TO DEVICES LIST THOSE OF KIND VIDEOINPUT (cameras)
+               //AND IF THE CAMERA HAS THE RIGHT FACEMODE ASSING IT TO "final"
+               if (tempDevice.kind == "videoinput")
+               {
+                   DEVICES.push(tempDevice);
+                   if(tempDevice.facingMode == "environment" ||tempDevice.label.indexOf("facing back")>=0 )
+                       {final = tempDevice;}
+               }
+           }
+   
+           var totalCameras = DEVICES.length;
+           //If couldnt find a suitable camera, pick the last one... you can change to what works for you
+           if(final == null)
+           {
+               //console.log("no suitable camera, getting the last one");
+               final = DEVICES[totalCameras-1];
+           };
+   
+           //Set the constraints and call getUserMedia
+           constraints = {
+           audio: false, 
+           video: {
+               deviceId: {exact: final.deviceId}
+               }
+           };
    // Activate the webcam stream.
   navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
      video.srcObject = stream;
