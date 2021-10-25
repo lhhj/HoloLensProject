@@ -137,26 +137,30 @@
    event.target.classList.add('removed');  
    
    // getUsermedia parameters.
- const constraints = {
-  video: {
-    width: {
-      min: 1280,
-      ideal: 1920,
-      max: 2560,
-    },
-    height: {
-      min: 720,
-      ideal: 1080,
-      max: 1440
-    },
-  }
-};
+   var constraints = {
+    audio: false,
+    video: {
+        width: { ideal: 1280 },
+        height: { ideal: 1024 },
+        facingMode: "environment"
+      }
+    };
+  // enumerate devices and select the first camera (mostly the back one)
+  navigator.mediaDevices.enumerateDevices().then(function(devices) {
+    for (var i = 0; i !== devices.length; ++i) {
+        if (devices[i].kind === 'videoinput') {
+            console.log('Camera found: ', devices[i].label || 'label not found', devices[i].deviceId || 'id no found');
+            videoConstraints.deviceId = { exact: devices[i].deviceId }
+        }
+    }
+  });
+
    // Activate the webcam stream.
-   navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+  navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
      video.srcObject = stream;
      video.addEventListener('loadeddata', predictWebcam);
    });
- }
+  }
  
  
  // Prediction loop!
