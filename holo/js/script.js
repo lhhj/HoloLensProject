@@ -138,43 +138,12 @@ function handleError(error) {
      console.log('Wait! Model not loaded yet.')
      return;
    }
-   var DEVICES = [];
-   var final = null;
-   var constraints;
-    navigator.mediaDevices.enumerateDevices()
-        .then(function(devices) {
-
-            var arrayLength = devices.length;
-            for (var i = 0; i < arrayLength; i++)
-            {
-                var tempDevice = devices[i];
-                //FOR EACH DEVICE, PUSH TO DEVICES LIST THOSE OF KIND VIDEOINPUT (cameras)
-                //AND IF THE CAMERA HAS THE RIGHT FACEMODE ASSING IT TO "final"
-                if (tempDevice.kind == "videoinput")
-                {
-                    DEVICES.push(tempDevice);
-                    if(tempDevice.facingMode == "environment" ||tempDevice.label.indexOf("facing back")>=0 )
-                        {final = tempDevice;}
-                }
-            }
-
-            var totalCameras = DEVICES.length;
-            //If couldnt find a suitable camera, pick the last one... you can change to what works for you
-            if(final == null)
-            {
-                //console.log("no suitable camera, getting the last one");
-                final = DEVICES[totalCameras-1];
-            };
-
-            //Set the constraints and call getUserMedia
-            constraints = {
-            audio: false, 
-            video: {
-                deviceId: {exact: final.deviceId}
-                }
-            };
-          });
-   // Hide the button.
+   const constraints = {
+      video: {
+       facingMode: 'environment'
+      }
+   };
+   
    event.target.classList.add('removed');  
    
    // getUsermedia parameters.
